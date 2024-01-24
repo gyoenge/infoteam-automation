@@ -185,7 +185,6 @@ for block in parse_content():
 hwpx.DeleteBack()
 
 # %%
-hwpx.HAction.Run("ParaNumberBulletLevelDown")
-hwpx.BreakPara()
+
 
 # %%
