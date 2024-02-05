@@ -4,16 +4,27 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import threading  
 from datetime import datetime
+import traceback
+import autonotion
+import autohwp 
 
 dotenv.load_dotenv()
 client = WebClient(token=os.getenv("SLACKBOT_TOKEN"))
 app = Flask(__name__) 
 
-def upload_file_to_slack(channel_id, file_path, title, callback):
+def generate_meeting_note_file(notion_pageid):
     try:
+        data, content = autonotion.get(notion_pageid)
+        file_path = autohwp.generate(data, content)
+        return file_path
+    except:
+        raise
+
+def upload_file_to_slack(channel_id, notion_pageid, title, callback):
+    try: 
         response = client.files_upload_v2(
             channels=channel_id,
-            file=file_path,
+            file=generate_meeting_note_file(notion_pageid),
             title=title,
         )
         response_message = {
@@ -26,7 +37,14 @@ def upload_file_to_slack(channel_id, file_path, title, callback):
             "response_type": "in_channel", 
             "text": f"Failed to upload meeting note file : {e.response['error']}",
         }
-        print(f"Error uploading file: {e.response['error']}")
+        print(f"Error uploading file: {e.response['error']}") 
+    except Exception as generate_exception: 
+        response_message = {
+            "response_type": "in_channel",
+            "text": f"Failed to generate meeting note file. ",
+        }
+        traceback.print_exc()
+        print(f"Error generating meeting note file: {generate_exception}")
     callback(response_message, channel_id) 
     
 def handle_upload_finished(response_message, channel_id):
@@ -47,11 +65,12 @@ def handle_command():
     channel_id = data['channel_id']
     notion_url = data['text']
     notion_pageid = notion_url.split("-")[-1].split("?")[0]
+    print(notion_pageid)
 
     if command == '/meetingnote': 
         thread = threading.Thread(target=upload_file_to_slack, args=(
             channel_id,
-            "GSA_report_template.hwp",
+            notion_pageid,
             "Meeting Note File",
             handle_upload_finished
         ))
@@ -63,3 +82,4 @@ def handle_command():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
