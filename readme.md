@@ -1,42 +1,61 @@
-# 프로그램 사용 방법
+# Infoteam Meeting Minutes Automation Project 
 
-### 1. .env 파일의 구성
+- GIST Student Council Information Bureau (INFOTEAM) Project
+- Developing a Meeting Minutes Automation Service
+- This service converts team meeting minutes in Notion to HWP files and delivers them via a Slackbot
+- Python Project
+
+## **Description**
+
+### **1. .env File Configuration**
+
+Create a `.env` file in the root directory with the following variables:
 
 ```
-NOTION_TOKEN={Notion 워크스페이스의 Auth 토큰}
-SLACKBOT_TOKEN={Slack bot 'Auto Meeting Note'의 Auth 토큰}
+NOTION_TOKEN={Auth token for your Notion workspace}
+SLACKBOT_TOKEN={Auth token for the 'Auto Meeting Note' Slack bot}
 ```
 
-1.  NOTION_TOKEN: 인포팀장에게 문의
-2.  SLACKBOT_TOKEN: 문의 (또는 slackbot 설정 페이지에 존재)
+1.  **NOTION\_TOKEN:** Contact the Infoteam lead for this token.
+2.  **SLACKBOT\_TOKEN:** Contact the team lead for this token (or find it on your Slack bot's configuration page).
 
-### 2. 실행 방법
+### **2. How to Run**
 
-1.  conda 가상환경을 생성한다.
+1.  **Create a Conda virtual environment.**
 
-    ```
-    conda create -f automation.yaml
+    ```bash
+    conda create -f environment.yaml
     conda activate automation
     ```
 
-2.  main.py를 실행한다. (올바른 conda로 실행 환경이 설정되었는지 확인)
-3.  로컬 서버에 대해 ngrok 터널 시작 (authtoken, 포트번호에 유의)
+    *(Note: Assuming `automation.yaml` is the intended filename, renamed to a more standard `environment.yaml` for clarity. If the file is indeed named `automation.yaml`, please keep that name.)*
 
+2.  **Run the main script.** (Ensure your execution environment is set to the correct Conda environment.)
+
+    ```bash
+    python main.py
     ```
+
+3.  **Start an ngrok tunnel to your local server.** (Pay attention to your authtoken and port number.)
+
+    ```bash
     ngrok authtoken <YOUR_AUTH_TOKEN>
     ngrok http 5000
     ```
 
-4.  ngrok 대시보드에서 "Forwarding" 항목의 https URL을 복사한다.
-5.  slackbot slash command 설정 페이지에서 '/meetingnote'명령의 Request URL에 4번에서 복사한 URL을 붙여넣은 후, 바로 뒤에 "/slack/command"를 덧붙인다. (문의)
+4.  **Copy the https URL** from the "Forwarding" line in your ngrok dashboard.
 
-### 3. Slack Slash Command 실행 방법 및 결과
+5.  **Update the Slack command URL.** Go to your Slack app's slash command configuration page. In the settings for the `/meetingnote` command, paste the URL you copied in step 4 into the "Request URL" field. Then, append `/slack/command` to the end of the URL. (Contact the team lead if you need help.)
+    *Example: `https://your-ngrok-url.ngrok.io/slack/command`*
 
-1.  인포팀 내 # meeting_notes 채널에 들어간다.
-2.  채팅으로 `/meetingnote [notion page url]`를 입력한다.
-    - 이 때 [notion page url]에는 노션 회의록 페이지 링크를 복사해서 넣는다. <br/>
-      ![Slash Command 참고 사진](.asset/slash_command_description.png)
-    - 노션 회의록 페이지 링크 위치 <br/>
-      ![노션 회의록 페이지 링크 참고 사진](.asset/page_id_description.png)
-3.  아래와 같이 slack bot이 회의록을 생성해 채널에 업로드해준다.
-    ![생성된 회의록이 업로드된 모습](.asset/meeting_note_upload_description.png)
+### **3. How to Use the Slack Slash Command**
+
+1.  Go to the **`#meeting_notes`** channel within the Infoteam Slack workspace.
+
+2.  Type the following command in the chat: `/meetingnote [notion page url]`
+
+      * Replace `[notion page url]` with the copied link to your Notion meeting minutes page. \<br/\>
+      * Location of the Notion meeting minutes page link: \<br/\>
+
+3.  The Slack bot will generate the meeting minutes and upload the file to the channel as shown below.
+
