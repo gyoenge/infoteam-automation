@@ -5,6 +5,16 @@
 - This service converts team meeting minutes in Notion to HWP files and delivers them via a Slackbot
 - Python Project
 
+### Preview
+
+(example of meeting minutes template)
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/22b82ae9-0165-4637-8132-e41234839d02" alt="automation_mockup" width="80%" />
+</p>
+
+---
+
 ## **Description**
 
 ### **1. .env File Configuration**
@@ -58,4 +68,5 @@ SLACKBOT_TOKEN={Auth token for the 'Auto Meeting Note' Slack bot}
       * Location of the Notion meeting minutes page link: \<br/\>
 
 3.  The Slack bot will generate the meeting minutes and upload the file to the channel as shown below.
+
 
